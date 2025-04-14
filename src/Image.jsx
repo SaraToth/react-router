@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 const Image = () => {
     const [imageURL, setImageURL] = useState(null);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("https://jsonplaceholder.typis", 
+        fetch("https://jsonplaceholder.typicode.com/photos", 
             { mode: "cors" })
             .then((response) => {
                 if (response.status >= 400) {
@@ -14,9 +15,11 @@ const Image = () => {
                 return response.json();
             })
             .then((response) => setImageURL(response[0].url))
-            .catch((error) => setError(error));
+            .catch((error) => setError(error))
+            .finally(() => setLoading(false));
     }, []); // Only need to fetch once at mount
 
+    if (loading) return <p>Loading...</p>;
     if (error) return <p>A network error was encountered.</p>
     return (
         imageURL && (
